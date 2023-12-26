@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html[]><html lang="en"><head><title>C# 3D Graphics Library EduGraf</title><link rel="stylesheet" href="style.css" /><link rel="icon" href="/assets/logo.png" type="image/png" sizes="16x16 32x32 64x64" /><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="EduGraf  programming shows you how to setup the development environment and run EduGraf." /></head><body><main><nav><ul class="ul-none"><li><em-title><a href="/index.html"><strong>Home</strong></a></em-title></li><li><ul class="ul-none"><li><a href="/ui.html"><em-title>UI</em-title></a></li><li><a href="/gallery.html"><em-title>Gallery</em-title></a></li><li><em-title>Programming</em-title><ul class="ul-none"><li><a href="programming_get_going.html"><em-title>Get Going</em-title></a></li><li><a href="/programming_basic_concepts.html"><em-title>Basic Concepts</em-title></a></li><li><a href="/programming_shading.html"><em-title>Shading</em-title></a></li><li><a href="/programming_tutorials.html"><em-title>Tutorials</em-title></a></li><li><a href="/programming_reference.html"><em-title>API Reference</em-title></a><ul class="ul-none"><li><a href="/api/EduGraf/toc.html">EduGraf</a></li><li><a href="/api/EduGraf/Cameras/toc.html">EduGraf.Cameras</a></li><li><a href="/api/EduGraf/Geometries/toc.html">EduGraf.Geometries</a></li><li><a href="/api/EduGraf/Lighting/toc.html">EduGraf.Lighting</a></li><li><a href="/api/EduGraf.OpenGL/toc.html">EduGraf.OpenGL</a></li><li><a href="/api/EduGraf/Tensors/toc.html">EduGraf.Tensors</a></li><li><a href="/api/EduGraf/ToolsAndShapes/toc.html">EduGraf.ToolsAndShapes</a></li><li><a href="/api/EduGraf/UI/toc.html">EduGraf.UI</a></li></ul></li></ul></li></ul></li></ul></nav><article><h1><sem-text>EduGraf</sem-text> Programming: Get Going</h1><h2>Required Operating System</h2><section><sem-text>EduGraf</sem-text> runs on Windows and Linux, but not on Apple devices. Apple only maintains WebGL in the browser, but not OpenGL for native applications. Thus, <sem-text>EduGraf</sem-text> currently lacks a Metal backend to run on Apple devices.</section><h2>Development Setup</h2><section><ol><li>Install the .NET 7 SDK.</li><li>
+                        Install VisualStudio (Windows only) or the VS Code development environment and setup a C# project. 
+                        <hint-text>
+                            You can test the development setup by creating a new folder and open a terminal in that folder with the console commands:
+                            <code>
+dotnet new console
+dotnet restore
+dotnet build
+dotnet run
+code .</code></hint-text></li><li>
+                        In the C# project, install the <code>EduGraf.OpenGL.OpenTK</code> nuget package into your project via the package manager.
+                        <hint-text>
+                             Alternatively you can use the console command: <code>
+dotnet add package EduGraf.OpenGL.OpenTK</code></hint-text></li><li>Rebuild your project.</li></ol></section><h2>Run <sem-text>EduGraf</sem-text> Test Program</h2><section>The following code demonstrates a complete "hello world" program producing a plain triangle that can be viewed in 3D. This code serves as function test. Also, you get an idea how it looks like.</section><section><img src="/assets/triangle.png" /></section><section><code><em-comment>// It is sufficient to reference package EduGraf.OpenGL.OpenTK,</em-comment><br /><em-comment>// the other needed packages will be included automatically.</em-comment>
+
+using System;
+using EduGraf;
+using EduGraf.Cameras;
+using EduGraf.Coordinates;
+using EduGraf.Geometries;
+using EduGraf.Lighting;
+using EduGraf.OpenGL.OpenTK;
+
+public class TriangleRendering : Rendering
+{
+    public TriangleRendering(Graphic graphic)
+        : base(graphic, new Color3(0.2f, 0, 0.2f))
+    {
+    }
+
+    public override void OnLoad()
+    {
+        float[] positions =
+        {
+            -0.5f,-0.5f, 0,
+            0.5f,-0.5f, 0,
+            0.0f, 0.5f, 0
+        };
+        float[] normals =
+        {
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1
+        };
+        var material = new[] {
+             new EmissiveUniformMaterial(new Color4(1, 0, 0, 0))
+        };
+        var shading = Graphic.CreateShading(Array.Empty&lt;Light&gt;(), material);
+        var geometry = Geometry.Create(positions, normals);
+        var surface = Graphic.CreateSurface(shading, geometry);
+        var triangle = Graphic.CreateVisual("", surface);
+        Scene.Add(triangle);
+    }
+}
+
+static class Program
+{
+     static void Main()
+    {
+        var graphic = new OpenTkGraphic();
+        var camera = new OrbitCamera(Space.Origin3, 2, Space.Unit3Z);
+        using var rendering = new TriangleRendering(graphic);
+        var window = new OpenTkWindow("Demo, graphic, 1024, 640);
+        window.Show(rendering, camera);
+    }
+}                    
+                </code></section></article></main><footer>
+    Last update:
+    <script type="text/javascript">document.write((new Date("2023-12-26")).toLocaleDateString());</script></footer></body></html>
