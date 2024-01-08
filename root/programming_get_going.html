@@ -4,7 +4,6 @@
                             You can test the development setup by creating a new folder and open a terminal in that folder with the console commands:
                             <code>
 dotnet new console
-dotnet restore
 dotnet build
 dotnet run
 code .</code></hint-text></li><li>
@@ -13,10 +12,9 @@ code .</code></hint-text></li><li>
                              Alternatively you can use the console command: <code>
 dotnet add package EduGraf.OpenGL.OpenTK</code></hint-text></li><li>Rebuild your project.</li></ol></section><h2>Run <sem-text>EduGraf</sem-text> Test Program</h2><section>The following code demonstrates a complete "hello world" program producing a plain triangle that can be viewed in 3D. This code serves as function test. Also, you get an idea how it looks like.</section><section><img src="/assets/triangle.png" /></section><section><code><em-comment>// It is sufficient to reference package EduGraf.OpenGL.OpenTK,</em-comment><br /><em-comment>// the other needed packages will be included automatically.</em-comment>
 
-using System;
 using EduGraf;
 using EduGraf.Cameras;
-using EduGraf.Coordinates;
+using EduGraf.Tensors;
 using EduGraf.Geometries;
 using EduGraf.Lighting;
 using EduGraf.OpenGL.OpenTK;
@@ -60,10 +58,10 @@ static class Program
         var graphic = new OpenTkGraphic();
         var camera = new OrbitCamera(Space.Origin3, 2, Space.Unit3Z);
         using var rendering = new TriangleRendering(graphic);
-        var window = new OpenTkWindow("Demo, graphic, 1024, 640);
+        var window = new OpenTkWindow("Demo", graphic, 1024, 640);
         window.Show(rendering, camera);
     }
-}                    
+} 
                 </code></section></article></main><footer>
     Last update:
     <script type="text/javascript">document.write((new Date("2023-12-26")).toLocaleDateString());</script></footer></body></html>
