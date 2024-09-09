@@ -36,10 +36,8 @@ public class TriangleRendering(Graphic graphic, OrbitCamera camera)
 
     public override void OnLoad(Window window)
     {
-        var shading = Graphic.CreateShading(
-            [], 
-            [ new EmissiveUniformMaterial(new Color4(1, 0, 0, 1)) ], 
-            camera);
+        var material = new EmissiveUniformMaterial(new Color4(1, 0, 0, 1));
+        var shading = Graphic.CreateShading([], [ material ], camera);
         var geometry = Geometry.Create(Positions, Normals);
         var surface = Graphic.CreateSurface(shading, geometry);
         var triangle = Graphic.CreateVisual("", surface);
