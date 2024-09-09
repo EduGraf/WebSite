@@ -19,35 +19,28 @@ using EduGraf.Lighting;
 using EduGraf.OpenGL.OpenTK;
 using EduGraf.UI;
 
-public class TriangleRendering : Rendering
+public class TriangleRendering(Graphic graphic, OrbitCamera camera) 
+    : Rendering(graphic, new Color3(0.2f, 0, 0.2f))
 {
-    private readonly OrbitCamera _camera;
+    private static readonly float[] Positions = [
+        -0.5f,-0.5f, 0,
+        +0.5f,-0.5f, 0,
+        +0.0f, 0.5f, 0
+    ];
 
-    public TriangleRendering(Graphic graphic, OrbitCamera camera)
-        : base(graphic, new Color3(0.2f, 0, 0.2f))
-    {
-        _camera = camera;
-    }
+    private static readonly float[] Normals = [
+        0, 0, 1,
+        0, 0, 1,
+        0, 0, 1
+    ];
 
     public override void OnLoad(Window window)
     {
-        float[] positions =
-        {
-            -0.5f,-0.5f, 0,
-            0.5f,-0.5f, 0,
-            0.0f, 0.5f, 0
-        };
-        float[] normals =
-        {
-            0, 0, 1,
-            0, 0, 1,
-            0, 0, 1
-        };
-        var material = new[] {
-             new EmissiveUniformMaterial(new Color4(1, 0, 0, 1))
-        };
-        var shading = Graphic.CreateShading([], material, _camera);
-        var geometry = Geometry.Create(positions, normals);
+        var shading = Graphic.CreateShading(
+            [], 
+            [ new EmissiveUniformMaterial(new Color4(1, 0, 0, 1)) ], 
+            camera);
+        var geometry = Geometry.Create(Positions, Normals);
         var surface = Graphic.CreateSurface(shading, geometry);
         var triangle = Graphic.CreateVisual("", surface);
         Scene.Add(triangle);
