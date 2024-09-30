@@ -4,8 +4,10 @@
 				EduGraf needs the 3D positions of the sphere to be able to display it. Fortunately, EduGraf comes with a few basic shapes. There is a static class Sphere in the <code>EduGraf.Shapes</code> namespace. The needed positions can be computed calling the <code>GetPositions()</code> method. The sphere is composed of little rectangular patches stiched together at lattitudinal and longitudinal lines. The method takes their counts as input. Each of the rectangular patches is composed of two triangles. OpenGL needs the information about which positions belong to which triangle. This can be computed calling the <code>GetTriangles()</code> method. Call both methods with the same counts. Adapt the code as follows.
 			</section><section><code>
 public class HelloWorldRendering(Graphic graphic, OrbitCamera camera)
-    : Rendering(graphic, new Color3(0.2f, 0, 0.2f))
+    : Rendering(graphic, new Color3(0.1f, 0, 0.1f))
 {
+    private Visual? _earth;
+
     public override void OnLoad(Window window)
     {
         var material = new EmissiveUniformMaterial(new Color4(1, 0, 0, 1));
@@ -14,26 +16,45 @@ public class HelloWorldRendering(Graphic graphic, OrbitCamera camera)
         var triangles = Sphere.GetTriangles(20, 20);
         var geometry = Geometry.Create(positions, triangles);
         var surface = Graphic.CreateSurface(shading, geometry);
-        var triangle = Graphic.CreateVisual("earth", surface);
-        Scene.Add(triangle);
+        _earth = Graphic.CreateVisual("earth", surface);
+        Scene.Add(_earth);
     }
 }
 </code></section><section>
 				Since we use the emissive material, the geometry of the sphere is not well visible. Hit the "G" key, to switch to a debugging mode showing only triangle borders instead of the surfaces. In this case, this reveals the geometry much better.
             </section><h2>Show the World</h2><section>
 				This is a sphere, alright. But we want to see our world. We can achieve this by projecting a map of the world onto the sphere. This is called texturing in computer graphics. The term "texture" originates from the Latin word "textura", which means "a weaving" or "a web". In English, it first appeared in the late 14th century, referring to the physical structure or feel of a surface. The standard texturing operation is the application of a 2D image to a 3D surface. First, we need to load an image, then create a texture, and finally a material from it, like so.
-            </section><section><code>
+			</section><section><code>
         using var image = Image.Load&lt;Rgba32&gt;("earthmap.jpg"); // using SixLabors.ImageSharp;
         image.Mutate(context =&gt; context.Flip(FlipMode.Vertical)); // switch orientation, if necessary
         var texture = Graphic.CreateTexture(image);
         var material = new EmissiveTextureMaterial(texture);
 </code></section><section>
 				It is necessary to exactly specify how the 2D shape maps onto the 3D surface, which is called UV-mapping. The term UV-mapping comes from the custom to denote the axes of the image-plane with U and V. Each vertex of the surface needs to be associated with UV-coordinates — think of it as placing them on the image. The U and V values range from 0 to 1. The UV-mapping for the sphere can be computed calling the <code>GetTextureUvs()</code> method, again with the same arguments.
-            </section><section><code>
+			</section><section><code>
         var textureUvs = Sphere.GetTextureUvs(20, 20);
         var geometry = Geometry.CreateWithUv(positions, positions, textureUvs, triangles);
 </code></section><section>
 				When running the program, the visualization should look as follows.
-            </section><section><img src="/assets/hello_world.png" /></section></article></main><footer>
+			</section><section><img src="/assets/hello_world.png" /></section><h2>Make the World go round</h2><section>
+				Nowadays, everybody knows that the world turns around the sun and around itself. So, let us make it turn around itself. Override the <code>virtual OnUpdateFrame()</code> method of the base rendering class to update the graphic at a high enough frequency that is not perceptible to the eye. The code gets the current timestamp and calculates the change in the angle since the last timestamp. The velocity is chosen such that the sphere rotates around itself once every minute.
+<code>
+    private long _lastUpdate = DateTime.Now.Ticks;
+
+    protected override void OnUpdateFrame(Window window)
+    {
+        const float velocity = MathF.PI / (30 * TimeSpan.TicksPerSecond);
+
+        long now = DateTime.Now.Ticks;
+        var deltaAngle = velocity * (now - _lastUpdate);
+        _lastUpdate = now;
+        _earth?.RotateY(deltaAngle);
+
+        base.OnUpdateFrame(window);
+    }
+
+</code></section><section>
+				Actually, the rotation axis of our planet is tilted with respect to the orbital axis by 23.436 degrees. The method above defines the relative update in rotation since its previous call. The additional task of tilting the earth axis can be solved more elegantly by the following approach. Calculate the rotation as a function of absolute time and then set the object's <code>Transform</code> property with a matrix calculated by e.g. by <code>Matrix4.RotationY()</code> instead of calling a rotation method. The exact coding is left as an exercise.
+			</section></article></main><footer>
     Last update:
-    <script type="text/javascript">document.write((new Date("2024-09-23")).toLocaleDateString());</script></footer></body></html>
+    <script type="text/javascript">document.write((new Date("2024-09-30")).toLocaleDateString());</script></footer></body></html>
