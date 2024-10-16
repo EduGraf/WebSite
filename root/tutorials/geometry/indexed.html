@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html[]><html lang="en"><head><title>C# 3D Graphics Library EduGraf</title><link rel="stylesheet" href="/style.css" /><link rel="icon" href="/assets/logo.png" type="image/png" sizes="16x16 32x32 64x64" /><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="This EduGraf tutorial shows you how create index geometries." /></head><body><main><nav><ul class="ul-none"><li><em-title><a href="/index.html"><strong>Home</strong></a></em-title></li><li><ul class="ul-none"><li><a href="/ui.html"><em-title>UI</em-title></a></li><li><a href="/gallery.html"><em-title>Gallery</em-title></a></li><li><em-title>Programming</em-title><ul class="ul-none"><li><a href="/programming/get_going.html"><em-title>Get Going</em-title></a></li><li><a href="/programming/basic_concepts.html"><em-title>Basic Concepts</em-title></a></li><li><a href="/programming/shading.html"><em-title>Shading</em-title></a></li><li><a href="/programming/reference.html"><em-title>API Reference</em-title></a><ul class="ul-none"><li><a href="/api/EduGraf/toc.html">EduGraf</a></li><li><a href="/api/EduGraf/Cameras/toc.html">EduGraf.Cameras</a></li><li><a href="/api/EduGraf/Geometries/toc.html">EduGraf.Geometries</a></li><li><a href="/api/EduGraf/Lighting/toc.html">EduGraf.Lighting</a></li><li><a href="/api/EduGraf.OpenGL/toc.html">EduGraf.OpenGL</a></li><li><a href="/api/EduGraf/Shapes/toc.html">EduGraf.Shapes</a></li><li><a href="/api/EduGraf/Tensors/toc.html">EduGraf.Tensors</a></li><li><a href="/api/EduGraf/Tools/toc.html">EduGraf.Tools</a></li><li><a href="/api/EduGraf/UI/toc.html">EduGraf.UI</a></li></ul></li></ul></li><li><a href="/tutorials/tutorials.html"><em-title>Tutorials</em-title></a></li></ul></li></ul></nav><article><h1><sem-text>EduGraf</sem-text> Tutorial: Indexed geometries</h1><h2>A more memory efficient representation of a tetrahedron</h2><section>
+				In this tutorial, we want to learn more about creating geometries, i.e. object shapes that we can define freely. We continue the <a href="non-indexed.html"><em-title>non-indexed geometries</em-title></a> tutorial.
+			</section><section>
+				The non-indexed geometry format can be quite redundant. This is because there are many vertices that are part of more than one triangle. The mesh can be represented using less memory, if vertex-positions are defined only once. This is exactly what the indexed geometry format does, which is also a native OpenGL format. On top level it consists of a list of vertex positions and a list of triangle vertices.
+			</section><section>
+				The list of vertex positions, as in the non-indexed format, consists of float-triples representing the coordinates in model space for each vertex - this time however all positions can be distinct.
+			</section><section>
+				The list of triangle vertices consists of index-triplets into the positions list. Each of the triplets defines the positions of a triangle's three vertices by index into the positions list, e.g. index 2 refers to the second position defined in the position's list, not the position starting at index 2 in the positions array. Thus, the array index in the positions list of the second position is 6.
+			</section><section>
+				Make the <code>Positions</code> field non-redundant and add the <code>Triangles</code> field as follows. Add <code>Triangles</code> as second argument to the call to <code>Geometry.Create()</code>.
+			</section><section><code>
+    private static readonly float[] Positions = [
+	//   x, y, z,
+        -1, 0,-1, // ground
+        +1, 0,-1,
+        +1, 0, 1,
+        -1, 0, 1,
+
+        +0, 1, 0, // top
+    ];
+    private static readonly ushort[] Triangles = [
+        0, 1, 2, // ground
+        0, 2, 3, // ground
+        0, 1, 4, // front
+        1, 2, 4, // right
+        2, 3, 4, // back
+        3, 0, 4, // left
+    ];
+</code></section></article></main><footer>
+    Last update:
+    <script type="text/javascript">document.write((new Date("2024-10-16")).toLocaleDateString());</script></footer></body></html>
