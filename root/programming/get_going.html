@@ -17,13 +17,13 @@ code .</code></hint-text></li><li>
 dotnet add package EduGraf.OpenGL.OpenTK</code></hint-text></li><li>Rebuild your project.</li></ol></section><h2>Run <sem-text>EduGraf</sem-text> Test Program</h2><section>The following code demonstrates a complete "hello triangle" program producing a plain triangle that can be viewed in 3D. This code serves as function test. Also, you get an idea how it looks like.</section><section><img src="/assets/triangle.png" /></section><section><code>
 using EduGraf;
 using EduGraf.Cameras;
-using EduGraf.Tensors;
 using EduGraf.Geometries;
 using EduGraf.Lighting;
 using EduGraf.OpenGL.OpenTK;
+using EduGraf.Tensors;
 using EduGraf.UI;
 
-public class TriangleRendering(Graphic graphic, OrbitCamera camera) 
+public class TriangleRendering(Graphic graphic, Camera camera)
     : Rendering(graphic, new Color3(0.2f, 0, 0.2f))
 {
     private static readonly float[] Positions = [
@@ -35,7 +35,8 @@ public class TriangleRendering(Graphic graphic, OrbitCamera camera)
     public override void OnLoad(Window window)
     {
         var material = new EmissiveUniformMaterial(new Color4(1, 0, 0, 1));
-        var shading = Graphic.CreateShading([], [ material ], camera);
+        var shading = Graphic.CreateShading("emissive", [], [material]);
+        shading.Camera = camera;
         var geometry = Geometry.Create(Positions);
         var surface = Graphic.CreateSurface(shading, geometry);
         var triangle = Graphic.CreateVisual("", surface);
@@ -48,7 +49,7 @@ static class Program
     static void Main()
     {
         var graphic = new OpenTkGraphic();
-        var camera = new OrbitCamera(new Point3(0, 0, 2),  Point3.Origin3);
+        var camera = new OrbitCamera(new Point3(0, 0, 2), Point3.Origin);
         var rendering = new TriangleRendering(graphic, camera);
         using var window = new OpenTkWindow("Hello World", graphic, 400, 400, camera.Handle);
         window.Show(rendering);
@@ -56,4 +57,4 @@ static class Program
 }
                 </code></section></article></main><footer>
     Last update:
-    <script type="text/javascript">document.write((new Date("2024-09-30")).toLocaleDateString());</script></footer></body></html>
+    <script type="text/javascript">document.write((new Date("2024-10-16")).toLocaleDateString());</script></footer></body></html>

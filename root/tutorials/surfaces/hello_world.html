@@ -11,7 +11,8 @@ public class HelloWorldRendering(Graphic graphic, OrbitCamera camera)
     public override void OnLoad(Window window)
     {
         var material = new EmissiveUniformMaterial(new Color4(1, 0, 0, 1));
-        var shading = Graphic.CreateShading([], [material], camera);
+        var shading = Graphic.CreateShading("emissive", [], [material]);
+        shading.Camera = camera;
         var positions = Sphere.GetPositions(20, 20);
         var triangles = Sphere.GetTriangles(20, 20);
         var geometry = Geometry.Create(positions, triangles);
@@ -54,7 +55,7 @@ public class HelloWorldRendering(Graphic graphic, OrbitCamera camera)
     }
 
 </code></section><section>
-				Actually, the rotation axis of our planet is tilted with respect to the orbital axis by 23.436 degrees. The method above defines the relative update in rotation since its previous call. The additional task of tilting the earth axis can be solved more elegantly by the following approach. Calculate the rotation as a function of absolute time and then set the object's <code>Transform</code> property with a matrix calculated by e.g. by <code>Matrix4.RotationY()</code> instead of calling a rotation method. The exact coding is left as an exercise.
+				Actually, the rotation axis of our planet is tilted with respect to the orbital axis by 23.436 degrees. The method above defines the relative update in rotation since its previous call. The additional task of tilting the earth axis can be solved more elegantly by the following approach. Calculate the rotation as a function of absolute time and then set the object's <code>Transform</code> property with a matrix calculated by <code>Matrix4.RotationY()</code> instead of calling a rotation method. The exact coding is left as an exercise.
 			</section></article></main><footer>
     Last update:
-    <script type="text/javascript">document.write((new Date("2024-09-30")).toLocaleDateString());</script></footer></body></html>
+    <script type="text/javascript">document.write((new Date("2024-10-16")).toLocaleDateString());</script></footer></body></html>
