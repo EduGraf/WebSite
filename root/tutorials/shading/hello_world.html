@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html[]><html lang="en"><head><title>C# 3D Graphics Library EduGraf</title><link rel="stylesheet" href="/style.css" /><link rel="icon" href="/assets/logo.png" type="image/png" sizes="16x16 32x32 64x64" /><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="This EduGraf 'hello world' tutorial shows you how display a textured globe." /></head><body><main><nav><ul class="ul-none"><li><em-title><a href="/index.html"><strong>Home</strong></a></em-title></li><li><ul class="ul-none"><li><a href="/ui.html"><em-title>UI</em-title></a></li><li><a href="/gallery.html"><em-title>Gallery</em-title></a></li><li><em-title>Programming</em-title><ul class="ul-none"><li><a href="/programming/get_going.html"><em-title>Get Going</em-title></a></li><li><a href="/programming/basic_concepts.html"><em-title>Basic Concepts</em-title></a></li><li><a href="/programming/shading.html"><em-title>Shading</em-title></a></li><li><a href="/programming/reference.html"><em-title>API Reference</em-title></a><ul class="ul-none"><li><a href="/api/EduGraf/toc.html">EduGraf</a></li><li><a href="/api/EduGraf/Cameras/toc.html">EduGraf.Cameras</a></li><li><a href="/api/EduGraf/Geometries/toc.html">EduGraf.Geometries</a></li><li><a href="/api/EduGraf/Lighting/toc.html">EduGraf.Lighting</a></li><li><a href="/api/EduGraf.OpenGL/toc.html">EduGraf.OpenGL</a></li><li><a href="/api/EduGraf/Shapes/toc.html">EduGraf.Shapes</a></li><li><a href="/api/EduGraf/Tensors/toc.html">EduGraf.Tensors</a></li><li><a href="/api/EduGraf/Tools/toc.html">EduGraf.Tools</a></li><li><a href="/api/EduGraf/UI/toc.html">EduGraf.UI</a></li></ul></li></ul></li><li><a href="/tutorials/tutorials.html"><em-title>Tutorials</em-title></a></li></ul></li></ul></nav><article><h1><sem-text>EduGraf</sem-text> Tutorial: Hello world using a texture</h1><h2>Resources</h2><section><ul><li><a href="/assets/earthmap.jpg">earth map</a></li></ul></section><h2>Show a Sphere</h2><section>
+﻿<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html[]><html lang="en"><head><head><title>C# 3D Graphics Library EduGraf</title><link rel="stylesheet" href="/style.css" /><link rel="icon" href="/assets/logo.png" type="image/png" sizes="16x16 32x32 64x64" /><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script><!-- http://www.mathjax.org/ --></head><meta name="description" content="This EduGraf 'hello world' tutorial shows you how display a textured globe." /></head><body><main><nav><ul class="ul-none"><li><em-title><a href="/index.html"><strong>Home</strong></a></em-title></li><li><ul class="ul-none"><li><a href="/ui.html"><em-title>UI</em-title></a></li><li><a href="/gallery.html"><em-title>Gallery</em-title></a></li><li><em-title>Programming</em-title><ul class="ul-none"><li><a href="/programming/get_going.html"><em-title>Get Going</em-title></a></li><li><a href="/programming/basic_concepts.html"><em-title>Basic Concepts</em-title></a></li><li><a href="/programming/shading.html"><em-title>Shading</em-title></a></li><li><a href="/programming/reference.html"><em-title>API Reference</em-title></a><ul class="ul-none"><li><a href="/api/EduGraf/toc.html">EduGraf</a></li><li><a href="/api/EduGraf/Cameras/toc.html">EduGraf.Cameras</a></li><li><a href="/api/EduGraf/Geometries/toc.html">EduGraf.Geometries</a></li><li><a href="/api/EduGraf/Lighting/toc.html">EduGraf.Lighting</a></li><li><a href="/api/EduGraf.OpenGL/toc.html">EduGraf.OpenGL</a></li><li><a href="/api/EduGraf/Shapes/toc.html">EduGraf.Shapes</a></li><li><a href="/api/EduGraf/Tensors/toc.html">EduGraf.Tensors</a></li><li><a href="/api/EduGraf/Tools/toc.html">EduGraf.Tools</a></li><li><a href="/api/EduGraf/UI/toc.html">EduGraf.UI</a></li></ul></li></ul></li><li><a href="/tutorials/tutorials.html"><em-title>Tutorials</em-title></a></li></ul></li></ul></nav><article><h1><sem-text>EduGraf</sem-text> Tutorial: Hello world using a texture</h1><h2>Resources</h2><section><ul><li><a href="/assets/earthmap.jpg">earth map</a></li></ul></section><h2>Show a Sphere</h2><section>
 				In this tutorial, we want to develop a proper "hello world" 3D graphic. We start from the "hello triangle" program given in the <a href="/programming/get_going.html"><em-title>Get Going</em-title></a> section. Because it is a world that we want to show, the first step is to replace the triangle with a sphere.
 			</section><section>
 				EduGraf needs the 3D positions of the sphere to be able to display it. Fortunately, EduGraf comes with a few basic shapes. There is a static class Sphere in the <code>EduGraf.Shapes</code> namespace. The needed positions can be computed calling the <code>GetPositions()</code> method. The sphere is composed of little rectangular patches stiched together at lattitudinal and longitudinal lines. The method takes their counts as input. Each of the rectangular patches is composed of two triangles. OpenGL needs the information about which positions belong to which triangle. This can be computed calling the <code>GetTriangles()</code> method. Call both methods with the same counts. Adapt the code as follows.
@@ -10,15 +10,23 @@ public class HelloWorldRendering(Graphic graphic, OrbitCamera camera)
 
     public override void OnLoad(Window window)
     {
-        var material = new EmissiveUniformMaterial(new Color4(1, 0, 0, 1));
-        var shading = Graphic.CreateShading("emissive", [], [material]);
-        shading.Camera = camera;
-        var positions = Sphere.GetPositions(20, 20);
-        var triangles = Sphere.GetTriangles(20, 20);
-        var geometry = Geometry.Create(positions, triangles);
-        var surface = Graphic.CreateSurface(shading, geometry);
-        _earth = Graphic.CreateVisual("earth", surface);
+        _earth = GetEarth(graphic, camera);
         Scene.Add(_earth);
+    }
+
+    private static VisualPart GetEarth(Graphic graphic, Camera camera)
+    {
+        const int resolution = 20;
+        var positions = Sphere.GetPositions(resolution, resolution);
+        var triangles = Sphere.GetTriangles(resolution, resolution);
+        var geometry = Geometry.Create(positions, positions, triangles);
+
+        var material = new EmissiveUniformMaterial(new Color4(1, 0, 0, 1));
+        var shading = Graphic.CreateShading("emissive", [], [ material ]);
+        shading.Camera = camera;
+
+        var surface = graphic.CreateSurface(shading, geometry);
+        return graphic.CreateVisual("earth", surface);
     }
 }
 </code></section><section>
@@ -33,29 +41,10 @@ public class HelloWorldRendering(Graphic graphic, OrbitCamera camera)
 </code></section><section>
 				It is necessary to exactly specify how the 2D shape maps onto the 3D surface, which is called UV-mapping. The term UV-mapping comes from the custom to denote the axes of the image-plane with U and V. Each vertex of the surface needs to be associated with UV-coordinates — think of it as placing them on the image. The U and V values range from 0 to 1. The UV-mapping for the sphere can be computed calling the <code>GetTextureUvs()</code> method, again with the same arguments.
 			</section><section><code>
-        var textureUvs = Sphere.GetTextureUvs(20, 20);
+        var textureUvs = Sphere.GetTextureUvs(resolution, resolution);
         var geometry = Geometry.CreateWithUv(positions, positions, textureUvs, triangles);
 </code></section><section>
-				When running the program, the visualization should look as follows.
-			</section><section><img src="/assets/hello_world.png" /></section><h2>Make the World go round</h2><section>
-				Nowadays, everybody knows that the world turns around the sun and around itself. So, let us make it turn around itself. Override the <code>virtual OnUpdateFrame()</code> method of the base rendering class to update the graphic at a high enough frequency that is not perceptible to the eye. The code gets the current timestamp and calculates the change in the angle since the last timestamp. The velocity is chosen such that the sphere rotates around itself once every minute.
-<code>
-    private long _lastUpdate = DateTime.Now.Ticks;
-
-    protected override void OnUpdateFrame(Window window)
-    {
-        const float velocity = MathF.PI / (30 * TimeSpan.TicksPerSecond);
-
-        long now = DateTime.Now.Ticks;
-        var deltaAngle = velocity * (now - _lastUpdate);
-        _lastUpdate = now;
-        _earth?.RotateY(deltaAngle);
-
-        base.OnUpdateFrame(window);
-    }
-
-</code></section><section>
-				Actually, the rotation axis of our planet is tilted with respect to the orbital axis by 23.436 degrees. The method above defines the relative update in rotation since its previous call. The additional task of tilting the earth axis can be solved more elegantly by the following approach. Calculate the rotation as a function of absolute time and then set the object's <code>Transform</code> property with a matrix calculated by <code>Matrix4.RotationY()</code> instead of calling a rotation method. The exact coding is left as an exercise.
-			</section></article></main><footer>
+				When running the program, the visualization should look as follows. This program is continued in the <a href="/tutorials/general/scene-hierarchy.html">scene hierarchy for transformations</a> tutorial.
+			</section><section><img src="/assets/hello_world.png" /></section></article></main><footer>
     Last update:
     <script type="text/javascript">document.write((new Date("2024-10-16")).toLocaleDateString());</script></footer></body></html>
