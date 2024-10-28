@@ -24,23 +24,23 @@
 			</section><h2>Simulate the earth system</h2><section>
 				Let us add a moon to the earth. For that we need another sphere. We take it easy and just give it a gray fully diffuse material. Furthermore, we need to scale it to have the right proportions with respect to earth. The moon diameter is 3'470 km and earth is 12'700 km. Thus, we need to scale the moon by 0.273. Furthermore the moon is at distance 384'000 km from earth or 60 times the earth radius.
 			</section><section>
-				Now, we want to rotate the moon around the earth. Be be accurate, we let them both rotate around the common center of mass. The mass of the earth is 5.97 * 10^24 kg and of the moon 7.35 * 10^22 respectively. Thus, earth has roughly 81 times the mass of the moon. Their common center of mass is \(d_{Center} = d_{EarthMoon} / (81 + 1) = 60 / 82 = 0.73\) times the earth radius. In our simulation, we let the earth an the moon rotate around each other in 30 minutes.
+				Now, we want to rotate the moon around the earth. Be be accurate, we let them both rotate around the common center of mass. The mass of the earth is 5.97 * 10^24 kg and of the moon 7.35 * 10^22 respectively. Thus, earth has roughly 81 times the mass of the moon. Their common center of mass is \(d_{Center} = d_{EarthMoon} / (81 + 1) = 60 / 82 = 0.73\) times the earth radius. In our simulation, we let the earth an the moon rotate around each other in 27.3 minutes.
 			</section><section>
 				With this "theoretical" preparation, we are ready to setup our scene and simulation. Add another method <code>GetMoon()</code>, that is pretty identical to <code>GetEarth()</code> without texture. Then change <code>OnLoad()</code> as follows.
 <code>
         const float distance = 60;
         const float center = 0.73f;
 
-        _earth = GetEarth(graphic, camera);
+        _earth = GetEarth(graphic);
         _earth.Translate(-center * Vector3.UnitX);
         Scene.Add(_earth);
 
-        var moon = GetMoon(graphic, camera);
+        var moon = GetMoon(graphic);
         moon.Scale(0.273f);
         moon.Translate((distance - center) * Vector3.UnitX);
         Scene.Add(moon);
 </code></section><section>
-				What is missing is that we want them to rotate around each other. For that we group the earth and moon together into a little hierarchy as follows and rotate the system by <code>_system?.RotateY(1f / 30 * deltaAngle);</code>. The translation of earth and moon are now relative to the system and the rotation of the system affects both earth and moon as intended.
+				What is missing is that we want them to rotate around each other. For that we group the earth and moon together into a little hierarchy as follows and rotate the system by <code>_system?.RotateY(1f / 27.3 * deltaAngle);</code>. The translation of earth and moon are now relative to the system and the rotation of the system affects both earth and moon as intended.
 <code>
         _system = Graphic.CreateGroup("system");
         Scene.Add(_system);
@@ -49,10 +49,10 @@
         ...
         _system.Add(moon);
 </code></section><h2>Add sun light</h2><section>
-				Especially the moon looks quite boring. Adding sunlight gives the moon the characteristic silhuette. Since the sun is far away, <code>ParallelLight</code>, e.g., in direction -Z, is appropriate. Create an instance in <code>OnLoad()</code> and pass it to <code>GetEarth()</code> and <code>GetMoon()</code>. Change material and shading as follows. The same can be done for earth using <code>DiffuseTextureMaterial</code>.
+				Especially the moon looks quite boring. Adding sunlight gives the moon the characteristic silhuette. Since the sun is far away, <code>ParallelLight</code>, e.g., in direction -Z, is appropriate. Create an instance in <code>OnLoad()</code> and pass it to <code>GetEarth()</code> and <code>GetMoon()</code>. Change material and shading as follows. The same can be done for earth using <code>ColorTextureMaterial</code>.
 <code>
-        var material = new DiffuseUniformMaterial(new Color4(0.7f, 0.7f, 0.7f, 1));
-        var shading = graphic.CreateShading("moon", [ sunlight ], [ material ]);
+        var material = new UniformMaterial(new Color3(0.7f, 0.7f, 0.7f));
+        var shading = graphic.CreateShading("moon", material, sunlight);
 </code></section></article></main><footer>
     Last update:
-    <script type="text/javascript">document.write((new Date("2024-10-16")).toLocaleDateString());</script></footer></body></html>
+    <script type="text/javascript">document.write((new Date("2024-10-27")).toLocaleDateString());</script></footer></body></html>

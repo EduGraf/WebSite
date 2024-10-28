@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html[]><html lang="en"><head><title>C# 3D Graphics Library EduGraf</title><link rel="stylesheet" href="/style.css" /><link rel="icon" href="/assets/logo.png" type="image/png" sizes="16x16 32x32 64x64" /><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="EduGraf  programming shows you how to setup the development environment and run EduGraf." /></head><body><main><nav><ul class="ul-none"><li><em-title><a href="/index.html"><strong>Home</strong></a></em-title></li><li><ul class="ul-none"><li><a href="/ui.html"><em-title>UI</em-title></a></li><li><a href="/gallery.html"><em-title>Gallery</em-title></a></li><li><em-title>Programming</em-title><ul class="ul-none"><li><a href="/programming/get_going.html"><em-title>Get Going</em-title></a></li><li><a href="/programming/basic_concepts.html"><em-title>Basic Concepts</em-title></a></li><li><a href="/programming/shading.html"><em-title>Shading</em-title></a></li><li><a href="/programming/reference.html"><em-title>API Reference</em-title></a><ul class="ul-none"><li><a href="/api/EduGraf/toc.html">EduGraf</a></li><li><a href="/api/EduGraf/Cameras/toc.html">EduGraf.Cameras</a></li><li><a href="/api/EduGraf/Geometries/toc.html">EduGraf.Geometries</a></li><li><a href="/api/EduGraf/Lighting/toc.html">EduGraf.Lighting</a></li><li><a href="/api/EduGraf.OpenGL/toc.html">EduGraf.OpenGL</a></li><li><a href="/api/EduGraf/Shapes/toc.html">EduGraf.Shapes</a></li><li><a href="/api/EduGraf/Tensors/toc.html">EduGraf.Tensors</a></li><li><a href="/api/EduGraf/Tools/toc.html">EduGraf.Tools</a></li><li><a href="/api/EduGraf/UI/toc.html">EduGraf.UI</a></li></ul></li></ul></li><li><a href="/tutorials/tutorials.html"><em-title>Tutorials</em-title></a></li></ul></li></ul></nav><article><h1><sem-text>EduGraf</sem-text> Programming: Get Going</h1><h2>Required Operating System</h2><section><sem-text>EduGraf</sem-text> runs on Windows, Linux and, with an issue, on Apple devices. The problem is that Apple only maintains WebGL in the browser, but not OpenGL for native applications. Fortunately, OpenTK has written an adapter. Thus, only on Apple devices, you need to add the following package to your project:
+﻿<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html[]><html lang="en"><head><head><title>C# 3D Graphics Library EduGraf</title><link rel="stylesheet" href="/style.css" /><link rel="icon" href="/assets/logo.png" type="image/png" sizes="16x16 32x32 64x64" /><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script><!-- http://www.mathjax.org/ --></head><meta name="description" content="EduGraf  programming shows you how to setup the development environment and run EduGraf." /></head><body><main><nav><ul class="ul-none"><li><em-title><a href="/index.html"><strong>Home</strong></a></em-title></li><li><ul class="ul-none"><li><a href="/ui.html"><em-title>UI</em-title></a></li><li><a href="/gallery.html"><em-title>Gallery</em-title></a></li><li><em-title>Programming</em-title><ul class="ul-none"><li><a href="/programming/get_going.html"><em-title>Get Going</em-title></a></li><li><a href="/programming/basic_concepts.html"><em-title>Basic Concepts</em-title></a></li><li><a href="/programming/shading.html"><em-title>Shading</em-title></a></li><li><a href="/programming/reference.html"><em-title>API Reference</em-title></a><ul class="ul-none"><li><a href="/api/EduGraf/toc.html">EduGraf</a></li><li><a href="/api/EduGraf/Cameras/toc.html">EduGraf.Cameras</a></li><li><a href="/api/EduGraf/Geometries/toc.html">EduGraf.Geometries</a></li><li><a href="/api/EduGraf/Lighting/toc.html">EduGraf.Lighting</a></li><li><a href="/api/EduGraf.OpenGL/toc.html">EduGraf.OpenGL</a></li><li><a href="/api/EduGraf/Shapes/toc.html">EduGraf.Shapes</a></li><li><a href="/api/EduGraf/Tensors/toc.html">EduGraf.Tensors</a></li><li><a href="/api/EduGraf/Tools/toc.html">EduGraf.Tools</a></li><li><a href="/api/EduGraf/UI/toc.html">EduGraf.UI</a></li></ul></li></ul></li><li><a href="/tutorials/tutorials.html"><em-title>Tutorials</em-title></a></li></ul></li></ul></nav><article><h1><sem-text>EduGraf</sem-text> Programming: Get Going</h1><h2>Required Operating System</h2><section><sem-text>EduGraf</sem-text> runs on Windows, Linux and, with an issue, on Apple devices. The problem is that Apple only maintains WebGL in the browser, but not OpenGL for native applications. Fortunately, OpenTK has written an adapter. Thus, only on Apple devices, you need to add the following package to your project:
 			<code>
 dotnet add package OpenTK
 </code>
@@ -23,7 +23,7 @@ using EduGraf.OpenGL.OpenTK;
 using EduGraf.Tensors;
 using EduGraf.UI;
 
-public class TriangleRendering(Graphic graphic, Camera camera)
+public class TriangleRendering(Graphic graphic)
     : Rendering(graphic, new Color3(0.2f, 0, 0.2f))
 {
     private static readonly float[] Positions = [
@@ -34,12 +34,12 @@ public class TriangleRendering(Graphic graphic, Camera camera)
 
     public override void OnLoad(Window window)
     {
-        var material = new EmissiveUniformMaterial(new Color4(1, 0, 0, 1));
-        var shading = Graphic.CreateShading("emissive", [], [material]);
-        shading.Camera = camera;
+        var light = new AmbientLight(new(1, 1, 1));
+        var material = new UniformMaterial(0, 0, new Color3(1, 0, 0));
+        var shading = Graphic.CreateShading("emissive", material, light);
         var geometry = Geometry.Create(Positions);
         var surface = Graphic.CreateSurface(shading, geometry);
-        var triangle = Graphic.CreateVisual("", surface);
+        var triangle = Graphic.CreateVisual("triangle", surface);
         Scene.Add(triangle);
     }
 }
@@ -50,11 +50,11 @@ static class Program
     {
         var graphic = new OpenTkGraphic();
         var camera = new OrbitCamera(new Point3(0, 0, 2), Point3.Origin);
-        var rendering = new TriangleRendering(graphic, camera);
-        using var window = new OpenTkWindow("Hello World", graphic, 400, 400, camera.Handle);
-        window.Show(rendering);
+        var rendering = new TriangleRendering(graphic);
+        using var window = new OpenTkWindow("Hello Triangle", graphic, 400, 400, camera.Handle);
+        window.Show(rendering, camera);
     }
 }
                 </code></section></article></main><footer>
     Last update:
-    <script type="text/javascript">document.write((new Date("2024-10-16")).toLocaleDateString());</script></footer></body></html>
+    <script type="text/javascript">document.write((new Date("2024-10-27")).toLocaleDateString());</script></footer></body></html>

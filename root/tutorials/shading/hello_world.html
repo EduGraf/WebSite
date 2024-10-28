@@ -3,28 +3,27 @@
 			</section><section>
 				EduGraf needs the 3D positions of the sphere to be able to display it. Fortunately, EduGraf comes with a few basic shapes. There is a static class Sphere in the <code>EduGraf.Shapes</code> namespace. The needed positions can be computed calling the <code>GetPositions()</code> method. The sphere is composed of little rectangular patches stiched together at lattitudinal and longitudinal lines. The method takes their counts as input. Each of the rectangular patches is composed of two triangles. OpenGL needs the information about which positions belong to which triangle. This can be computed calling the <code>GetTriangles()</code> method. Call both methods with the same counts. Adapt the code as follows.
 			</section><section><code>
-public class HelloWorldRendering(Graphic graphic, OrbitCamera camera)
+public class HelloWorldRendering(Graphic graphic)
     : Rendering(graphic, new Color3(0.1f, 0, 0.1f))
 {
     private Visual? _earth;
 
     public override void OnLoad(Window window)
     {
-        _earth = GetEarth(graphic, camera);
+        _earth = GetEarth(graphic);
         Scene.Add(_earth);
     }
 
-    private static VisualPart GetEarth(Graphic graphic, Camera camera)
+    private static VisualPart GetEarth(Graphic graphic)
     {
         const int resolution = 20;
         var positions = Sphere.GetPositions(resolution, resolution);
         var triangles = Sphere.GetTriangles(resolution, resolution);
         var geometry = Geometry.Create(positions, positions, triangles);
 
-        var material = new EmissiveUniformMaterial(new Color4(1, 0, 0, 1));
-        var shading = Graphic.CreateShading("emissive", [], [ material ]);
-        shading.Camera = camera;
-
+        var material = new UniformMaterial(new Color3(1, 0, 0));
+        var light = new AmbientLight(new Color3(1, 1, 1));
+        var shading = Graphic.CreateShading("emissive", material, light);
         var surface = graphic.CreateSurface(shading, geometry);
         return graphic.CreateVisual("earth", surface);
     }
@@ -37,7 +36,7 @@ public class HelloWorldRendering(Graphic graphic, OrbitCamera camera)
         using var image = Image.Load&lt;Rgba32&gt;("earthmap.jpg"); // using SixLabors.ImageSharp;
         image.Mutate(context =&gt; context.Flip(FlipMode.Vertical)); // switch orientation, if necessary
         var texture = Graphic.CreateTexture(image);
-        var material = new EmissiveTextureMaterial(texture);
+        var material = new ColorTextureMaterial(texture);
 </code></section><section>
 				It is necessary to exactly specify how the 2D shape maps onto the 3D surface, which is called UV-mapping. The term UV-mapping comes from the custom to denote the axes of the image-plane with U and V. Each vertex of the surface needs to be associated with UV-coordinates — think of it as placing them on the image. The U and V values range from 0 to 1. The UV-mapping for the sphere can be computed calling the <code>GetTextureUvs()</code> method, again with the same arguments.
 			</section><section><code>
@@ -47,4 +46,4 @@ public class HelloWorldRendering(Graphic graphic, OrbitCamera camera)
 				When running the program, the visualization should look as follows. This program is continued in the <a href="/tutorials/general/scene-hierarchy.html">scene hierarchy for transformations</a> tutorial.
 			</section><section><img src="/assets/hello_world.png" /></section></article></main><footer>
     Last update:
-    <script type="text/javascript">document.write((new Date("2024-10-16")).toLocaleDateString());</script></footer></body></html>
+    <script type="text/javascript">document.write((new Date("2024-10-27")).toLocaleDateString());</script></footer></body></html>
