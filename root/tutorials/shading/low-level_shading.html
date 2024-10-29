@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html[]><html lang="en"><head><head><title>C# 3D Graphics Library EduGraf</title><link rel="stylesheet" href="/style.css" /><link rel="icon" href="/assets/logo.png" type="image/png" sizes="16x16 32x32 64x64" /><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script><!-- http://www.mathjax.org/ --></head><meta name="description" content="This EduGraf 'low-level shading' tutorial shows you how to write a custom shader in GLSL." /></head><body><main><nav><ul class="ul-none"><li><em-title><a href="/index.html"><strong>Home</strong></a></em-title></li><li><ul class="ul-none"><li><a href="/ui.html"><em-title>UI</em-title></a></li><li><a href="/gallery.html"><em-title>Gallery</em-title></a></li><li><em-title>Programming</em-title><ul class="ul-none"><li><a href="/programming/get_going.html"><em-title>Get Going</em-title></a></li><li><a href="/programming/basic_concepts.html"><em-title>Basic Concepts</em-title></a></li><li><a href="/programming/shading.html"><em-title>Shading</em-title></a></li><li><a href="/programming/reference.html"><em-title>API Reference</em-title></a><ul class="ul-none"><li><a href="/api/EduGraf/toc.html">EduGraf</a></li><li><a href="/api/EduGraf/Cameras/toc.html">EduGraf.Cameras</a></li><li><a href="/api/EduGraf/Geometries/toc.html">EduGraf.Geometries</a></li><li><a href="/api/EduGraf/Lighting/toc.html">EduGraf.Lighting</a></li><li><a href="/api/EduGraf.OpenGL/toc.html">EduGraf.OpenGL</a></li><li><a href="/api/EduGraf/Shapes/toc.html">EduGraf.Shapes</a></li><li><a href="/api/EduGraf/Tensors/toc.html">EduGraf.Tensors</a></li><li><a href="/api/EduGraf/Tools/toc.html">EduGraf.Tools</a></li><li><a href="/api/EduGraf/UI/toc.html">EduGraf.UI</a></li></ul></li></ul></li><li><a href="/tutorials/tutorials.html"><em-title>Tutorials</em-title></a></li></ul></li></ul></nav><article><h1><sem-text>EduGraf</sem-text> Tutorial: Low-level shading</h1><h2>Resources</h2><section><ul><li><a href="/assets/cities_16k.png">city lights map</a></li></ul></section><h2>Introduction</h2><section>
+				In this tutorial, we want to develop our own low-level shader in GLSL (OpenGL Shading Language). We continue the <a href="/tutorials/shading/hello_world.html"><em-title>hello world</em-title></a> tutorial.
+			</section><section>
+				Unfortunately, there is quite some math behind this that is beyond the scope of this tutorial. So we will take a more technical perspective on this. To read up on the former, refer e.g. to <a href="https://learnopengl.com/Getting-started">subsections <em-title>Transformations</em-title> and <em-title>Coordinate Systems</em-title></a>.
+			</section><h2>Uniform color shader</h2><section>
+				A shader consists of two GLSL programs compiled together. The first program defines the transformation of vertices and is called <em-title>vertex shader</em-title>. The second program defines the subsequent step of determining the color of the pixels respectively fragments. Subsequently, vertices and fragments are referred to as primitives, if they need not be distinguished.
+				Both programs feature a main()-method as entry-point. There are three kinds of parameters. <code>in</code>- and <code>out</code>-parameters are per primitive. <code>uniform</code>-parameters are the same for all primitives. <code>out</code>-parameters of the vertex shader are passed to the fragment shader.
+			</section><section>
+				The vertex shader is mainly about defining the positions of all vertices. Since we do not cover the theory in this tutorial, the vertex shader is given as follows.
+<code>
+#version 410
+
+in vec3 Position;
+
+uniform mat4 Model;
+uniform mat4 View;
+uniform mat4 Projection;
+
+void main(void)
+{
+    gl_Position = vec4(Position, 1.0) * Model * View * Projection;
+}
+</code></section><section><code>gl_Position</code> is an <code>out</code>-parameter that is given by OpenGL. It is interpreted as the vertex-position in homogeneous, normalized device coordinates. The computation in the script calculates <code>gl_Position</code> from the vertex position in the model space with a sequence of linear transformations, i.e. matrix multiplications.
+			</section><section>
+				The <code>uniform</code> parameters are defined and set by EduGraf. It calculates their values from the position an orientation of the camera.
+			</section><section>
+				The <em-title>fragment shader</em-title> is very simple in this case, since all fragments feature the same color.
+<code>
+#version 410
+
+uniform vec3 color;
+out vec3 fragment;
+  
+void main()
+{
+    fragment = color;
+}
+</code></section><section>
+				The first <code>out</code>-parameter defines the color that is used for the fragment when displayed by the graphics pipeline. The color needs to be defined and set by our shading. 
+			</section><section>
+				First we need to construct a shading that integrates the GLSL shader programs defined above into EduGraf. This is achieved by creating a new shading class derived from <code>GlShading</code> and passing all required parameters to the base-class constructor. The shaders can be defined as <code>string</code> constants. <code>uniform</code> parameters can be set using the <code>Set()</code>-method. This must be done in a specific context, which is activated by <code>DoInContext</code>.
+<code>
+public class UniformShading : GlShading
+{
+    public UniformShading(GlGraphic graphic, Color3 color)
+        : base("uniform", graphic, VertexShader, FragmentShader)
+    {
+        DoInContext(() =&gt; Set("color", color));
+    }
+}
+</code></section><section>
+				We can now go back to the code of the hello-world tutorial and replace the material, light and shading code with our defined emissive shading as follows. We need to pass a <code>graphic</code> of type <code>GlGraphic</code> to our rendering, since, obviously, GLSL is platform specific.
+<code>			
+        ...
+        var shading = new UniformShading(graphic, new Color3(0, 0.5f. 1));
+        ...
+}
+</code></section><section>
+				When running the program, the earth should now appear as a uniformly colored turquoise ball. 
+			</section><h2>Texture shader</h2><section>
+				Although correct, the result from our work above looks rather boring. Let us make it more interesting by using a texture. We need to extend the vertex shader with the texture coordinate information. Texture coordinates are passed in by vertex through the geometry. The parameter name is defined by EduGraf to <code>TextureUV</code>. This information needs to be interpolated by OpenGL to yield the coordinates per fragment by passing it though the vertex shader. Extend it with the following code.
+<code>
+in vec2 TextureUv;
+out vec2 textureUv;
+    ...
+    textureUv = TextureUv; // in main
+    ...
+</code></section><section>
+				In the fragment shader, we want to pick the color at the current texture coordinates from the texture instead of the uniform color. This is achieved by the following fragment shader.
+<code>
+#version 410
+
+in vec2 textureUv;
+uniform sampler2D textureUnit;
+out vec4 fragment;
+
+void main(void)
+{
+    fragment = texture(textureUnit, textureUv);
+}
+</code></section><section>
+				A shader can work with multiple textures. Therefore they need to be identified, which happens through the <code>uniform</code> parameter <code>textureUnit</code> in this case. Texture values are looked up with the <code>texture()</code>-function taking the identifier as first and the texture-coordinates as second parameter.
+			</section><section>
+				Finally, the two new shading programs need to be combined into an EduGraf-shading again as follows.
+<code>
+    public ColorTextureShading(GlGraphic graphic, GlTextureHandle handle)
+    : base(
+        "color_texture",
+        graphic,
+        VertexShader,
+        FragmentShader,
+        new GlNamedTextureShadingAspect("textureUnit", handle))
+    {}
+
+</code></section><section>
+				Some setup needs to happen to activate the texturing unit on the GPU. This is achieved through the <code>GlNamedTextureShadingAspect</code>, whose first argument needs to match the <code>textureUnit</code>-parameter in the fragment shader. Replace again the shading in the rendering with this one (reusing the world map texture from the preceding tutorial).
+			</section><h2>Simulate sun light</h2><section>
+				This looks fine again, but we want to achieve something more than with standard means. The vertex shader passes on the world-normal as follows. The model-transformation of the normal does not include the translation part, which happens in the homogeneous coordinate that is stripped by converting it to a 3x3 matrix.
+<code>
+...
+in vec3 Normal;
+out vec3 worldNormal;
+   ...
+    worldNormal = Normal * mat3(Model); // in main
+   ...
+</code></section><section>
+				Since the model for earth is a sphere around the origin with radius one, its model positions correspond to the normal vector at that position. The x-coordinate of the world normal yields the cosine between the normal- and the unit-vector in direction x, which is equal to the relative intensity of the light depending on the orientation of the surface.
+<code>
+    fragment = max(0, worldNormal.x) * texture(textureUnit, textureUv);
+</code></section><h2>Simulate city lights at night</h2><section>
+				We also want to show something on the night-side of the earth, namely the city lights. Run the program with the texture provided above. Note that the image is mostly back, so it is a bit difficult to see anything. Now, we want to combine the two textures in a single shader. We want to show the map on the day-side and the city lights on the night-side. Also, city lights shall be turned on, when it becomes dark. This is performed by the following fragment shader. Also, add a second <code>GlNamedTextureShadingAspect</code> and set the corresponding names.
+<code>
+#version 410
+
+in vec3 worldNormal;
+in vec2 textureUv;
+uniform sampler2D mapTextureUnit;
+uniform sampler2D lightsTextureUnit;
+out vec4 fragment;
+
+void main(void)
+{
+    float i = normalize(worldNormal).x;
+    if (i &gt; 0) fragment = i * texture(mapTextureUnit, textureUv);
+    else fragment = vec4(0, 0, 0, 1);
+    if (i &lt;= 0.25f) {
+        fragment = min(vec4(1, 1, 1, 1), fragment + texture(lightsTextureUnit, textureUv));
+    }
+}
+</code></section><section><img src="/assets/earth_with_lights.png" /></section></article></main><footer>
+    Last update:
+    <script type="text/javascript">document.write((new Date("2024-10-29")).toLocaleDateString());</script></footer></body></html>
