@@ -6,6 +6,8 @@
 				A shader consists of two GLSL programs compiled together. The first program defines the transformation of vertices and is called <em-title>vertex shader</em-title>. The second program defines the subsequent step of determining the color of the pixels respectively fragments. Subsequently, vertices and fragments are referred to as primitives, if they need not be distinguished.
 				Both programs feature a main()-method as entry-point. There are three kinds of parameters. <code>in</code>- and <code>out</code>-parameters are per primitive. <code>uniform</code>-parameters are the same for all primitives. <code>out</code>-parameters of the vertex shader are passed to the fragment shader.
 			</section><section>
+				Before starting with GLSL programs a note about erroneous programs. There are three main error categories that result in different behavior.
+				<ul><li>Most interoperation errors (mainly parameter passing) between EduGraf and the shader program  cause a .NET exception.</li><li>Syntax errors in the GLSL program are reported by OpenGL in the console window and all objects using it are not part of the scene.</li><li>Unintended computation in the GLSL program result in potentially visible objects not looking correct.</li></ul></section><section>
 				The vertex shader is mainly about defining the positions of all vertices. Since we do not cover the theory in this tutorial, the vertex shader is given as follows.
 <code>
 #version 410
