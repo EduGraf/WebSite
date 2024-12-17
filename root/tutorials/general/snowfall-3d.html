@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>C# 3D Graphics Library EduGraf</title>
+        <link rel="stylesheet" href="/style.css" />
+        <link
+            rel="icon"
+            href="/assets/logo.png"
+            type="image/png"
+            sizes="16x16 32x32 64x64"
+        />
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script
+            id="MathJax-script"
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        ></script>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css"
+        />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cs.min.js"></script>
+    </head>
+    <body>
+        <main>
+            <nav>
+                <ul class="ul-none">
+                    <li>
+                        <em-title
+                            ><a href="/index.html"
+                                ><strong>Home</strong></a
+                            ></em-title
+                        >
+                    </li>
+                    <li>
+                        <ul class="ul-none">
+                            <li>
+                                <a href="/ui.html"><em-title>UI</em-title></a>
+                            </li>
+                            <li>
+                                <a href="/gallery.html"
+                                    ><em-title>Gallery</em-title></a
+                                >
+                            </li>
+                            <li>
+                                <em-title>Programming</em-title>
+                                <ul class="ul-none">
+                                    <li>
+                                        <a href="/programming/get_going.html"
+                                            ><em-title>Get Going</em-title></a
+                                        >
+                                    </li>
+                                    <li>
+                                        <a href="/programming/basic_concepts.html"
+                                            ><em-title>Basic Concepts</em-title></a
+                                        >
+                                    </li>
+                                    <li>
+                                        <a href="/programming/shading.html"
+                                            ><em-title>Shading</em-title></a
+                                        >
+                                    </li>
+                                    <li>
+                                        <a href="/programming/reference.html"
+                                            ><em-title>API Reference</em-title></a
+                                        >
+                                        <ul class="ul-none">
+                                            <li>
+                                                <a href="/api/EduGraf/toc.html"
+                                                    >EduGraf</a
+                                                >
+                                            </li>
+                                            <li>
+                                                <a
+                                                    href="/api/EduGraf/Cameras/toc.html"
+                                                    >EduGraf.Cameras</a
+                                                >
+                                            </li>
+                                            <li>
+                                                <a
+                                                    href="/api/EduGraf/Geometries/toc.html"
+                                                    >EduGraf.Geometries</a
+                                                >
+                                            </li>
+                                            <li>
+                                                <a
+                                                    href="/api/EduGraf/Lighting/toc.html"
+                                                    >EduGraf.Lighting</a
+                                                >
+                                            </li>
+                                            <li>
+                                                <a
+                                                    href="/api/EduGraf.OpenGL/toc.html"
+                                                    >EduGraf.OpenGL</a
+                                                >
+                                            </li>
+                                            <li>
+                                                <a
+                                                    href="/api/EduGraf/Shapes/toc.html"
+                                                    >EduGraf.Shapes</a
+                                                >
+                                            </li>
+                                            <li>
+                                                <a
+                                                    href="/api/EduGraf/Tensors/toc.html"
+                                                    >EduGraf.Tensors</a
+                                                >
+                                            </li>
+                                            <li>
+                                                <a
+                                                    href="/api/EduGraf/Tools/toc.html"
+                                                    >EduGraf.Tools</a
+                                                >
+                                            </li>
+                                            <li>
+                                                <a href="/api/EduGraf/UI/toc.html"
+                                                    >EduGraf.UI</a
+                                                >
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="/tutorials/tutorials.html"
+                                    ><em-title>Tutorials</em-title></a
+                                >
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            <article>
+                <h1>
+                    <sem-text>EduGraf</sem-text> Tutorial: Simulate 3D Snowfall
+                    using Koch Snowflakes
+                </h1>
+                <section>
+                    <img
+                        style="width: 50%"
+                        src="../../assets/snowfall/intro.webp"
+                    />
+                    <p>Source: Own presentment</p>
+                </section>
+                <section>
+                    <p>In this tutorial, you will learn how to create a 3D snowfall
+                    simulation featuring
+                    <a
+                        href="https://en.wikipedia.org/wiki/Koch_snowflake"
+                        target="_blank"
+                        >Koch snowflakes</a
+                    >. We'll show you how to draw intricate recursive shapes using
+                    triangles and add realistic physical behavior to bring your
+                    snowfall to life! This project builds on the foundational
+                    classes and concepts already available in
+                    <a href="https://edugraf.info" target="_blank">EduGraf</a>.</p>
+                </section>
+                <h2>What are Koch Snowflakes?</h2>
+                <section>
+                    <p>Koch Snowflakes are self-similar or
+                    <a
+                        href="https://mathworld.wolfram.com/Fractal.html"
+                        target="_blank"
+                        >fractal</a
+                    >
+                    curves, first described in 1904 by the Swedish mathematician
+                    <a
+                        href="https://www.britannica.com/biography/Niels-Fabian-Helge-von-Koch"
+                        target="_blank"
+                        >Helge von Koch</a
+                    >. The Koch snowflake begins with an
+                    <a
+                        href="https://en.wikipedia.org/wiki/Equilateral_triangle"
+                        target="_blank"
+                        >equilateral triangle</a
+                    >. Each side is divided into three equal parts, and a smaller
+                    equilateral triangle is constructed on the middle segment,
+                    pointing outward. The base of this new triangle is then removed,
+                    completing the first iteration of the Koch snowflake. This
+                    process can be repeated multiple times, with each iteration
+                    adding more intricate subdivisions, gradually forming a
+                    structure that resembles a snowflake. Please consult
+                    <a
+                        href="https://mathworld.wolfram.com/KochSnowflake.html"
+                        target="_blank"
+                        >Wolfram MathWorld</a
+                    >
+                    for the mathematical details.</p>
+                </section>
+                <section>
+                    <img
+                        style="width: 75%"
+                        src="../../assets/snowfall/koch_snowflake_iterations.webp"
+                    />
+                    <p>
+                        Source:
+                        <a
+                            href="https://mathworld.wolfram.com/KochSnowflake.html"
+                            target="_blank"
+                            >Wolfram MathWorld</a
+                        >
+                    </p>
+                </section>
+                <h2>How do I implement them?</h2>
+                <section>
+                    <p>First, we create a class which handles all of the details of creating the geometry of the Koch snowflake in <a href="https://edugraf.info">EduGraf</a>.</p>
+<pre><code class="language-cs">using EduGraf.Tensors;
+
+public class SnowflakeShape {}</code></pre>
+                    <p>Inside the class, add a method that calculates and returns the positions of vertices as a flat array of floats for a snowflake shape. Each line is commented to provide more detailed explanations.</p>
+<pre><code class="language-cs">public static float[] GetPositions(int depth, float radius)
+{
+    var vertices = new List<Vector2>
+    {
+      // Top Vertex.
+      new (0, radius),
+
+      // The next two vertices are calculated using trigonometric functions
+      // for an equilateral triangle with the given "radius".
+      new (-radius * MathF.Sin(MathF.PI / 3), -radius * MathF.Cos(MathF.PI / 3)),
+      new (radius * MathF.Sin(MathF.PI / 3), -radius * MathF.Cos(MathF.PI / 3))
+    };
+
+    // This closes the shape by repeating the first vertex.
+    vertices.Add(vertices[0]);
+
+    // Now we iteratively subdivide the edges of the triangle "depth" times
+    // to add more detail to the shape.
+    for (var i = 0; i < depth; i += 1)
+    {
+        vertices = Subdivide(vertices);
+    }
+
+    // Next, we convert a List of Vector2 to a flat array of floats.
+    // For each vertex, add the x and y value. The z value is set to
+    // 0 for 3D compatibility. "positions" is a List of floats.
+    var positions = new List();
+    foreach (var vertex in vertices)
+    {
+        positions.Add(vertex.X);
+        positions.Add(vertex.Y);
+        positions.Add(0);
+    }
+
+    return positions.ToArray();
+}</code></pre>
+                <p>Next, we generate the indices for the vertices. These can then be used to draw triangles from the vertices in the snowflake.</p>
+<pre><code class="language-cs">public static ushort[] GetTriangles(float[] positions)
+{
+    var indices = new ushort[positions.Length / 3];
+    for (ushort i = 0; i < indices.Length; i += 1)
+    {
+        indices[i] = i;
+    }
+    return indices;
+}
+</code></pre>
+            <p>The Subdivide method refines a list of 2D points (vertices), creating a new list of points that smooths and adds detail to the shape formed by those points.</p>
+<pre><code class="language-cs">private static List<Vector2> Subdivide(List<Vector2> vertices)
+{
+    // The list holding all subdivided points
+    var result = new List<Vector2>();
+
+    // Processes consecutive pairs of vertices to calculate intermediate points
+    // that subdivide the line segment between them.
+    for (var i = 0; i < vertices.Count - 1; i += 1)
+    {
+        var start = vertices[i];
+        var end = vertices[i + 1];
+
+        // Performs linear interpolation to find a point along the line segment
+        // between start and end.
+        var a = Lerp(start, end, 1f / 3f);
+        var b = Lerp(start, end, 2f / 3f);
+
+        // Computes the angle of the line segment in radians.
+        // Subtracts π/3 to rotate the angle counterclockwise by 60°.
+        var angle = MathF.Atan2(end.Y - start.Y, end.X - start.X) - MathF.PI / 3;
+
+        // Computes the Euclidean distance between start and end.
+        // Divides it by 3 to scale the height of the "peak" to
+        // one-third of the segment length.
+        var distance = Distance(start, end) / 3f;
+
+        // Calculates the "peak" point.
+        // Uses trigonometry to offset point a by distance
+        // in the rotated direction (angle).
+        var peak = new Vector2(
+            a.X + distance * MathF.Cos(angle),
+            a.Y + distance * MathF.Sin(angle)
+        );
+
+        result.Add(start);
+        result.Add(a);
+        result.Add(peak);
+        result.Add(b);
+    }
+
+    // Adds the very last vertex of the original list to the result.
+    // This ensures the end of the shape is preserved.
+    result.Add(vertices[^1]);
+
+    return result;
+}
+</code></pre>
+                <p>The Lerp method (<a href="https://en.wikipedia.org/wiki/Linear_interpolation" target="_blank">linear interpolation</a>) calculates a point that lies a specific fraction (t) of the way between two points in 2D space, represented as Vector2.</p>
+<pre><code class="language-cs">private static Vector2 Lerp(Vector2 start, Vector2 end, float t)
+{
+    // Calculates the distance between the coordinates of start and end.
+    // Scales the distance by the interpolation factor t.
+    return new Vector2(
+        start.X + t * (end.X - start.X),
+        start.Y + t * (end.Y - start.Y)
+    );
+}
+</code></pre>
+                <p>Lastly, we add a method to calculate <a href="https://en.wikipedia.org/wiki/Euclidean_distance" target="_blank">Euclidean distance</a>.</p>
+<pre><code class="language-cs">private static float Distance(Vector2 a, Vector2 b)
+{
+    return MathF.Sqrt((b.X - a.X) * (b.X - a.X) + (b.Y - a.Y) * (b.Y - a.Y));
+}
+</code></pre>
+                <p>Although we delve into the rendering of the snowflakes elsewhere, here’s a sneak peek for you!</p>
+                </section>
+                <section>
+                    <img src="../../assets/snowfall/single_snowflake.webp"/>
+                    <p>Source: Own presentment</p>
+                </section>
+                <h2>Adding Moment of Inertia and Movement to Snowflakes</h2>
+                <section>
+                    <p>The real-world physics of snowfall is governed by intricate <a href="https://agupubs.onlinelibrary.wiley.com/doi/full/10.1002/2017MS000982">equations</a> and complex physical processes. Instead of modeling challenging phenomena like <a href="https://en.wikipedia.org/wiki/Turbulence" target="_blank">turbulence</a>, <a href="https://en.wikipedia.org/wiki/Airflow">airflow</a>, and the irregularities of real <a href="https://en.wikipedia.org/wiki/Snowflake">snowflakes</a>, we simplify the process by calculating the snowflake's <a href="https://en.wikipedia.org/wiki/Moment_of_inertia" target="_blank">moment of inertia</a>—the resistance it exhibits to rotational motion around an axis. This allows us to create a convincing illusion of snowfall without delving into the full complexity of its underlying physics.</p>
+                    <p>To accomplish this, we will design a Snowflake class to encapsulate both the physical and positional properties of the snowflake. While the values we use were determined through trial and error, feel free to experiment with them to suit your preferences—or your hardware’s capabilities!</p>
+<pre><code class="language-cs">using EduGraf.Tensors;
+
+public class Snowflake {
+    public const float Radius = 0.5f;
+    public const int Depth = 3;
+    public Vector3 Position { get; private set; } = null!;
+
+    private float _velocity;
+    private const float SnowflakeMass = -0.000000000000000000000001f;
+    private float _momentOfInertia;
+    private readonly Random _random = new();
+    private const float FixedStartPositionY = 0.1f;
+    private const float BoundariesPositives = 0.11f;
+    private const float BoundariesNegatives = -0.1f;
+}</code></pre>
+                <p>Next, let’s first explore the methods we will expose to the renderer class.</p>
+<pre><code class="language-cs">public Snowflake()
+{
+    // Calls the Initialize method to down below to
+    // set the initial position, velocity,
+    // and moment of inertia of the snowflake
+    Initialize();
+}
+
+public void Reset()
+{
+    // A helper method that randomizes the position and velocity,
+    // effectively resetting the snowflake.
+    Respawn();
+}
+
+public void Update(float deltaTime)
+{
+    // Calculates the new Y-position by moving the snowflake downward
+    // based on its velocity and the time elapsed.
+    var yPosition = Position.Y - _velocity * deltaTime;
+
+    // Updates the Position vector to the new calculated values
+    // for X, Y, and Z.
+    Position = new Vector3(Position.X, yPosition, Position.Z);
+}
+
+public float CalculateDeltaAngle(float deltaTime)
+{
+    // Defines the maximum allowable change in angle per update
+    // to prevent excessive rotation.
+    const float maxDeltaAngle = 0.001f;
+
+    //  Uses the velocity, time, and moment of inertia to calculate
+    // the rotation angle based on rotational physics.
+    return Math.Min(_velocity * deltaTime / _momentOfInertia, maxDeltaAngle);
+}
+
+// Checks if the snowflake has gone out of bounds,
+// indicating it has landed or is no longer visible.
+public bool HasLanded()
+{
+    return Position.Y <= BoundariesNegatives ||
+           Position.Y >= BoundariesPositives ||
+           Position.X <= BoundariesNegatives ||
+           Position.X >= BoundariesPositives ||
+           Position.Z <= BoundariesNegatives ||
+           Position.Z >= BoundariesPositives;
+}
+
+private void Initialize()
+{
+    var randomX = _random.Next(-1, 1) / 100f;
+    var randomZ = _random.Next(-1, 1) / 100f;
+
+    Position = new Vector3(randomX, FixedStartPositionY, randomZ);
+    _velocity = (float)(_random.NextDouble() * 0.005 + 0.2);
+    _momentOfInertia = CalculateMomentOfInertia();
+}
+
+private void Respawn()
+{
+    var randomX = _random.Next(-1, 1) / 10f;
+    var randomZ = _random.Next(-1, 1) / 10f;
+
+    Position = new Vector3(randomX, FixedStartPositionY, randomZ);
+    _velocity = (float)(_random.NextDouble() * 0.005 + 0.2);
+    _momentOfInertia = CalculateMomentOfInertia();
+}
+</code></pre>
+                <p>Lastly, we implement the calculations for moment of inertia of Koch snowflakes. Some preliminary assumptions were made:</p>
+                <ul>
+                    <li>The moment of inertia measures an object's resistance to rotational motion around an axis. For a snowflake, this includes contributions from its arms and edges.</li>
+                    <li>A snowflake is assumed to have six-fold symmetry, meaning the contributions from all six arms are identical.</li>
+                    <li>Mass is evenly distributed among the smaller segments of the fractal.</li>
+                    <li>The total snowflake mass is divided proportionally as the depth increases.</li>
+                    <li>Each edge segment contributes to the moment of inertia through its own rotational inertia and the <a href="https://en.wikipedia.org/wiki/Parallel_axis_theorem">Parallel Axis Theorem</a>.</li>
+                </ul>
+                <p>For a deeper dive into the moment of inertia and Koch snowflakes, you can refer to this insightful <a href="https://math.stackexchange.com/questions/1294046/calculate-moment-of-inertia-of-koch-snowflake">post</a>. Now, without further ado, let us jump into the implementation!</p>
+<pre><code class="language-cs">private static float CalculateMomentOfInertia()
+{
+    // Assumes the snowflake starts with an equilateral triangle at its base.
+    // Calculates initial side length
+    var sideLength = 2 * Radius * MathF.Sin(MathF.PI / 3);
+    var momentOfInertia = 0f;
+
+    // Divides the snowflake's total mass by the
+    // number of segments at the deepest recursion level.
+    var currentMass = SnowflakeMass / (3 * MathF.Pow(4, Depth));
+
+    // A factor for parallel axis contributions,
+    // assuming the distance to edges is proportional to the radius.
+    const float distanceFactor = Radius / 3f;
+
+    for (var i = 0; i < Depth; i += 1)
+    {
+        // Mass increases at higher levels of the fractal
+        // since fewer segments exist at higher levels.
+        var scaledMass = currentMass * MathF.Pow(4, i);
+
+        // Length decreases as the recursion splits each side into thirds.
+        var scaledLength = sideLength / MathF.Pow(3, i);
+
+        // Adds the moment of inertia for an equilateral triangular segment.
+        momentOfInertia += 1f / 36f * scaledMass * (scaledLength * scaledLength);
+
+        // Adds the moment of inertia for edge segments.
+        var edgeMoment = 1f / 81f * scaledMass * (scaledLength * scaledLength);
+
+        // Uses the Parallel Axis Theorem to account for the fact
+        // that edge masses are offset from the center.
+        var parallelAxis = scaledMass * (distanceFactor * distanceFactor);
+
+        // Multiplies by 6 to account for the 6-fold symmetry of the snowflake.
+        momentOfInertia += 6 * (edgeMoment + parallelAxis);
+    }
+
+    return momentOfInertia;
+</code></pre>
+                </section>
+                <h2>Drawing Snowflakes and the Ground to the Screen</h2>
+                <section>
+                <p>
+                    Now comes the part where we finally get to use <a href="https://edugraf.info">EduGraf</a>!
+                    Before diving deeper, also create a Ground class which will help us position the ground on the screen.
+                </p>
+<pre><code class="language-cs">public class Ground
+{
+    public Vector3 Position { get; private set; }
+
+    public Ground()
+    {
+        Position = new Vector3(0, -110, 0);
+    }
+}
+</code></pre>
+            <p>We now have all the necessary ingredients to set up our SnowflakeRendering class, which will be responsible for drawing the snowflakes to the screen.</p>
+<pre><code class="language-cs">using EduGraf;
+using EduGraf.Shapes;
+using EduGraf.Geometries;
+using EduGraf.Lighting;
+using EduGraf.Tensors;
+using EduGraf.UI;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using System;
+
+public class SnowflakeRendering(Graphic snowflakeGraphic, Graphic groundGraphic)
+    : Rendering(snowflakeGraphic, new Color3(0.2f, 0.3f, 0.4f))
+{
+    // We set up all visual elements here,
+    // including a list of both rendered snowflakes
+    // and their 'logical' classes
+    private Visual? _renderedGround;
+    private List<Visual>? _renderedSnowflakes;
+    private List<Snowflake>? _snowflakes;
+    private long _lastUpdate = DateTime.Now.Ticks;
+}
+</code></pre>
+                <p>The first load of the screen is responsible to pain the ground and the snowflakes. This is done in the OnLoad method.</p>
+<pre><code class="language-cs">public override void OnLoad(Window window)
+{
+    _renderedSnowflakes = [];
+    _snowflakes = [];
+
+    // Here we generate a total amount of 2000 snowflakes.
+    // Vary this number according to preference or to
+    // hardware capabilities.
+    for (var i = 0; i < 2000; i += 1)
+    {
+
+        // We first create a 'logical snowflake'
+        var snowflake = new Snowflake();
+
+        // We use the depth and radius parameters to create
+        // the snowflake visual
+        var renderedSnowflake =
+            CreateSnowflake(Snowflake.Depth, Snowflake.Radius);
+
+        // We scale and position the snowflake
+        // based on its randomly initialized position
+        renderedSnowflake.Scale(0.1f);
+        renderedSnowflake.Translate(snowflake.Position);
+
+        // Add them to their respective containers
+        _renderedSnowflakes.Add(renderedSnowflake);
+        _snowflakes.Add(snowflake);
+
+        // The Scene object manages all renderable items
+        // and displays them in the window.
+        Scene.Add(renderedSnowflake);
+    }
+
+    // Do the same for the ground
+    Ground ground = new Ground();
+    _renderedGround = CreateGround(groundGraphic);
+    _renderedGround.Scale(100f);
+    _renderedGround.Translate(ground.Position);
+    Scene.Add(_renderedGround);
+}
+</code></pre>
+            <p>Let us briefly touch upon the methods used for creating both the snowflake and the ground visual. We use the following image for our ground texture.</p>
+            <img style="width: 50%" src="../../assets/snowfall/glass.webp" />
+            <p>Source: <a href="https://www.freepik.com/free-photos-vectors/glass-texture">Freep!k</a></p>
+<pre><code class="language-cs">private Visual CreateSnowflake(int depth, float radius)
+{
+    // Calculates the positions (vertices) of the snowflake
+    // based on the recursion depth and radius.
+    var positions = SnowflakeShape.GetPositions(depth, radius);
+
+    // Generates the triangle indices (connectivity between vertices)
+    // required to create the geometry from the positions.
+    var indices = SnowflakeShape.GetTriangles(positions);
+
+    // Creates a light source with an ambient color of pure white (1, 1, 1).
+    // Ambient light affects all surfaces uniformly.
+    var light = new AmbientLight(new Color3(1, 1, 1));
+
+    // Creates a material with a uniform white color and default settings
+    // (0, 0 for any additional parameters like roughness and metalness).
+    var material = new UniformMaterial(0, 0, new Color3(1, 1, 1));
+
+    // Combines the material and light into a shading model.
+    // The "emissive" shading mode makes the snowflake
+    // appear as though it emits light.
+    var shading = Graphic.CreateShading("emissive", material, light);
+
+    //  Builds the geometry for the snowflake using
+    // The vertex positions and the triangle indices
+    // defining the surface connectivity.
+    var geometry = Geometry.Create(positions.ToArray(), indices);
+
+    // Combines the geometry and shading to create a renderable surface.
+    var surface = Graphic.CreateSurface(shading, geometry);
+
+    // Wraps the surface into a visual object named "snowflake",
+    // ready to be added to the scene.
+    return snowflakeGraphic.CreateVisual("snowflake", surface);
+}
+
+public VisualPart CreateGround(Graphic ground)
+{
+    // The grid resolution in the X and Z directions (100x100 grid).
+    const int nx = 100;
+    const int nz = 100;
+
+    // A constant height value for the ground (flat surface).
+    const float f3 = 1f;
+
+    // Generates UV coordinates for mapping the texture onto the grid.
+    var textureUvs = Patch.GetTextureUvs(nx, nz);
+
+    // Generates vertex positions for the grid based on a function (Func)
+    // that provides the Y-coordinate (height).
+    var positions = Patch.GetPositions(nx, nz, Func);
+
+    // Generates triangle indices for connecting grid vertices into a mesh.
+    var triangles = Patch.GetTriangles(nx, nz);
+
+    // Loads an image file (glass.jpg) as a texture.
+    using var image = Image.Load<Rgba32>("glass.jpg");
+
+    // Flips the image vertically if necessary to
+    // align the texture correctly with the geometry.
+    image.Mutate(context => context.Flip(FlipMode.Vertical));
+
+    // Creates a texture object from the processed image
+    var texture = Graphic.CreateTexture(image);
+
+    // Creates a material that uses the texture.
+    var material = new ColorTextureMaterial(0, 0, texture);
+
+    // Creates the geometry with texture coordinates
+    // (UVs) for proper texture mapping.
+    var geometry = Geometry.CreateWithUv(positions, positions, textureUvs, triangles);
+
+    // White ambient light for uniform illumination.
+    var light = new AmbientLight(new Color3(1, 1, 1));
+
+    // Creates emissive shading to display the texture
+    // without directional lighting effects.
+    var shading = ground.CreateShading("emissive", material, light);
+
+    // Combines the shading and geometry into a renderable surface.
+    var surface = ground.CreateSurface(shading, geometry);
+
+    // Wraps the surface into a VisualPart object named
+    // "ground", ready for rendering.
+    return ground.CreateVisual("ground", surface);
+
+    // A function that always returns the constant f3 for the Y-coordinate,
+    // ensuring the ground remains flat.
+    float Func(float f1, float f2) => f3;
+}
+</code></pre>
+                <p>After having rendered the objects, we now determine their behavior inside each frame update. This method is called every frame to update the scene, handle physics, and prepare for rendering.</p>
+<pre><code class="language-cs">using EduGraf.Cameras;
+using EduGraf.OpenGL.OpenTK;
+using EduGraf.Tensors;
+
+private static void Main()
+{
+    // Initialize positions of camera
+    var topLeft = new Point3(0f, 0f, 0f);
+    var topRight = new Point3(0f, 0f, 0f);
+
+    // Scaling factor
+    const float wa = 10f;
+
+    // Create snowflake and ground graphic objects
+    var snowflakeGraphic = new OpenTkGraphic();
+    var groundGraphic = new OpenTkGraphic();
+
+    // Initialize camera
+    var camera = new OrbitCamera(
+        new Point3(-4f, 0.1f, -4f), Point3.Combine(wa, topLeft, topRight)
+    );
+
+    // Prepare rendering
+    var rendering = new SnowflakeRendering(snowflakeGraphic, groundGraphic);
+
+    // Create a window and show it
+    using var window = new OpenTkWindow(
+        "Snowfall 3D", snowflakeGraphic, 1920, 1080, camera.Handle
+    );
+
+    window.Show(rendering, camera);
+}
+</code></pre>
+                </section>
+                <h2>Conclusion</h2>
+                <section>
+                    <p>
+                        That was quite a bit of code to work through—great job making it this far! We hope this tutorial provided you with a solid foundation for creating a simple yet detailed 3D snowfall simulation. If you're looking for ways to take the simulation even further, we recommend checking out <a href='https://www.sciencedirect.com/science/article/pii/S187802961100394X?ref=pdf_download&fr=RR-2&rr=8f32e50329fe3b64'>this paper</a> for additional inspiration and ideas.                    </p>
+                </section>
+            </article>
+        </main>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                hljs.highlightAll();
+            });
+        </script>
+    </body>
+    <footer>
+        Last update:
+        <script type="text/javascript">
+            document.write(new Date("2024-12-16").toLocaleDateString());
+        </script>
+    </footer>
+</html>
