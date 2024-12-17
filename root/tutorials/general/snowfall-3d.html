@@ -499,7 +499,7 @@ public class SnowflakeRendering(Graphic snowflakeGraphic, Graphic groundGraphic)
 {
     // We set up all visual elements here,
     // including a list of both rendered snowflakes
-    // and their 'informational' classes
+    // and their 'logical' classes
     private Visual? _renderedGround;
     private List<Visual>? _renderedSnowflakes;
     private List<Snowflake>? _snowflakes;
@@ -518,7 +518,7 @@ public class SnowflakeRendering(Graphic snowflakeGraphic, Graphic groundGraphic)
     for (var i = 0; i < 2000; i += 1)
     {
 
-        // We first create an 'informational snowflake'
+        // We first create a 'logical snowflake'
         var snowflake = new Snowflake();
 
         // We use the depth and radius parameters to create
